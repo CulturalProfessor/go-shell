@@ -25,12 +25,16 @@ func main() {
 			return
 		case "echo " + param:
 			fmt.Println(param)
-		case "type "+param:
+		case "type " + param:
 			path, ifFound := checkDir(paths, param)
-			if ifFound {
-				fmt.Printf("%s is %s/%s\n", param, path,param)
+			if param == "echo" || param == "exit" {
+				fmt.Printf("%s is a shell builtin\n", param)
 			} else {
-				fmt.Printf("%s: %s\n", param, path)
+				if ifFound {
+					fmt.Printf("%s is %s/%s\n", param, path, param)
+				} else {
+					fmt.Printf("%s: %s\n", param, path)
+				}
 			}
 		default:
 			fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
@@ -47,7 +51,7 @@ func checkDir(paths []string, cmd string) (string, bool) {
 			if e.Name() == cmd {
 				path, ifFound = paths[i], true
 				return path, ifFound
-				} else {
+			} else {
 				path, ifFound = "not found", false
 			}
 		}
