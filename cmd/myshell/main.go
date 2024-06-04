@@ -27,7 +27,7 @@ func main() {
 			fmt.Println(param)
 		case "type " + param:
 			path, ifFound := checkDir(paths, param)
-			if param == "echo" || param == "exit" {
+			if param == "echo" || param == "exit" || param == "type" {
 				fmt.Printf("%s is a shell builtin\n", param)
 			} else {
 				if ifFound {
