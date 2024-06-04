@@ -45,7 +45,6 @@ func checkDir(paths []string, cmd string) (string, bool) {
 		entries, _ := os.ReadDir(paths[i])
 		for _, e := range entries {
 			if e.Name() == cmd {
-				fmt.Printf("%s is %s\n", cmd, paths[i])
 				path, ifFound = paths[i], true
 				return path, ifFound
 				} else {
