@@ -20,15 +20,25 @@ func main() {
 		if err != nil {
 			fmt.Println("I/O Error")
 		}
-		_,param,_:=strings.Cut(input," ")
-		param=strings.TrimRight(param,"\n")
-		
-		switch strings.TrimRight(input,"\n") {
+		_, param, _ := strings.Cut(input, " ")
+		param = strings.TrimRight(param, "\n")
+		switch strings.TrimRight(input, "\n") {
 		case "exit 0":
 			os.Exit(0)
 			return
-		case "echo "+param:
+		case "echo " + param:
 			fmt.Println(param)
+		case "type " + param:
+			switch param {
+			case "echo":
+				fmt.Println("echo is a shell builtin")
+			case "exit":
+				fmt.Println("exit is a shell builtin")
+			case "cat":
+				fmt.Println("cat is /bin/cat")
+			default:
+				fmt.Println("nonexistent not found")
+			}
 		default:
 			fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
 		}
