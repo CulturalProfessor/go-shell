@@ -98,6 +98,19 @@ func checkDir(paths []string, cmd string) (string, bool) {
 }
 
 func changeDirectory(path string) {
+	if strings.HasPrefix(path, "~") {
+		home := os.Getenv("HOME")
+		if home == "" {
+			fmt.Println("cd: HOME environment variable is not set")
+			return
+		}
+		if path == "~" {
+			path = home
+		} else {
+			path = filepath.Join(home, path[2:])
+		}
+	}
+
 	absPath, err := filepath.Abs(path)
 	if err != nil {
 		fmt.Printf("cd: %s: Invalid path\n", path)
@@ -108,4 +121,3 @@ func changeDirectory(path string) {
 		fmt.Printf("cd: %s: No such file or directory\n", path)
 	}
 }
-
