@@ -28,7 +28,7 @@ func main() {
 		case "type "+param:
 			path, ifFound := checkDir(paths, param)
 			if ifFound {
-				fmt.Printf("%s is %s\n", param, path)
+				fmt.Printf("%s is %s/%s\n", param, path,param)
 			} else {
 				fmt.Printf("%s: %s\n", param, path)
 			}
