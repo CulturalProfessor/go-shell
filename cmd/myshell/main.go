@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -19,6 +20,12 @@ func main() {
 		if err != nil {
 			fmt.Println("I/O Error")
 		}
+
+		if strings.TrimRight(input,"\n")=="exit 0"{
+			os.Exit(0)
+			break
+		}
+
 		fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
 	}
 }
