@@ -40,6 +40,9 @@ func main() {
 			}
 		case "echo":
 			fmt.Println(strings.Join(params, " "))
+		case "pwd":
+			wd,_:=os.Getwd()
+			fmt.Printf("%s\n",wd)
 		case "type":
 			if len(params) != 1 {
 				fmt.Println("Usage: type <command>")
