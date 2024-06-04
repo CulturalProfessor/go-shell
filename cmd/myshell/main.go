@@ -39,7 +39,7 @@ func main() {
 			case "type":
 				fmt.Println("type is a shell builtin")
 			default:
-				fmt.Println("nonexistent not found")
+				fmt.Printf("%s not found\n",param)
 			}
 		default:
 			fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
