@@ -33,7 +33,7 @@ func main() {
 				fmt.Printf("%s: %s\n", param, path)
 			}
 		default:
-			fmt.Fprint(os.Stdout, input[:len(input)-1]+": not found\n")
+			fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
 		}
 
 	}
@@ -48,7 +48,7 @@ func checkDir(paths []string, cmd string) (string, bool) {
 				path, ifFound = paths[i], true
 				return path, ifFound
 				} else {
-				path, ifFound = "command not found", false
+				path, ifFound = "not found", false
 			}
 		}
 	}
