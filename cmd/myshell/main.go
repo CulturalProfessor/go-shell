@@ -33,7 +33,7 @@ func main() {
 				fmt.Printf("%s: %s\n", param, path)
 			}
 		default:
-			fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
+			fmt.Fprint(os.Stdout, input[:len(input)-1]+": not found\n")
 		}
 
 	}
