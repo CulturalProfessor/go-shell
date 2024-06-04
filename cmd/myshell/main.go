@@ -19,5 +19,5 @@ func main() {
 	if err!=nil{
 		fmt.Println("I/O Error")
 	}
-	fmt.Print(input)
+	fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
 }
