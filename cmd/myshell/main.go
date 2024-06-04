@@ -4,31 +4,48 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"path/filepath"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
 func main() {
 	paths := strings.Split(os.Getenv("PATH"), ":")
+	reader := bufio.NewReader(os.Stdin)
+
 	for {
-		fmt.Fprint(os.Stdout, "$ ")
+		fmt.Print("$ ")
 
-		input, err := bufio.NewReader(os.Stdin).ReadString('\n')
-
+		input, err := reader.ReadString('\n')
 		if err != nil {
 			fmt.Println("I/O Error")
+			continue
 		}
-		_, param, _ := strings.Cut(input, " ")
-		param = strings.TrimRight(param, "\n")
 
-		switch strings.TrimRight(input, "\n") {
-		case "exit 0":
-			os.Exit(0)
-			return
-		case "echo " + param:
-			fmt.Println(param)
-		case "type " + param:
+		input = strings.TrimSpace(input)
+		if input == "" {
+			continue
+		}
+
+		args := strings.Fields(input)
+		command := args[0]
+		params := args[1:]
+
+		switch command {
+		case "exit":
+			if len(params) == 1 && params[0] == "0" {
+				os.Exit(0)
+			} else {
+				fmt.Println("Usage: exit 0")
+			}
+		case "echo":
+			fmt.Println(strings.Join(params, " "))
+		case "type":
+			if len(params) != 1 {
+				fmt.Println("Usage: type <command>")
+				continue
+			}
+			param := params[0]
 			path, ifFound := checkDir(paths, param)
 			if param == "echo" || param == "exit" || param == "type" {
 				fmt.Printf("%s is a shell builtin\n", param)
@@ -36,39 +53,37 @@ func main() {
 				if ifFound {
 					fmt.Printf("%s is %s/%s\n", param, path, param)
 				} else {
-					fmt.Printf("%s: %s\n", param, path)
+					fmt.Printf("%s: not found\n", param)
 				}
 			}
 		default:
-			cmd:=strings.TrimRight(input, "\n")
-			path, ifFound := checkDir(paths, param)
+			path, ifFound := checkDir(paths, command)
 			if ifFound {
-				fullPath := filepath.Join(path,cmd )
-				cmd := exec.Command(fullPath, param)
+				fullPath := filepath.Join(path, command)
+				cmd := exec.Command(fullPath, params...)
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
-
+				if err := cmd.Run(); err != nil {
+					fmt.Printf("%s: %v\n", command, err)
+				}
 			} else {
-
-				fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
+				fmt.Printf("%s: command not found\n", command)
 			}
 		}
-
 	}
 }
 
 func checkDir(paths []string, cmd string) (string, bool) {
-	path, ifFound := "command not found", false
-	for i := 0; i < len(paths); i++ {
-		entries, _ := os.ReadDir(paths[i])
+	for _, dir := range paths {
+		entries, err := os.ReadDir(dir)
+		if err != nil {
+			continue
+		}
 		for _, e := range entries {
 			if e.Name() == cmd {
-				path, ifFound = paths[i], true
-				return path, ifFound
-			} else {
-				path, ifFound = "not found", false
+				return dir, true
 			}
 		}
 	}
-	return path, ifFound
+	return "", false
 }
