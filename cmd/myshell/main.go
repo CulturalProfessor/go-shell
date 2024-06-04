@@ -44,10 +44,11 @@ func main() {
 			wd,_:=os.Getwd()
 			fmt.Printf("%s\n",wd)
 		case "cd":
-			err:=os.Chdir(params[0])
-			if err!=nil{
-				fmt.Printf("cd: %s: No such file or directory\n",params[0])
+			if len(params) != 1 {
+				fmt.Println("Usage: cd <directory>")
+				continue
 			}
+			changeDirectory(params[0])
 		case "type":
 			if len(params) != 1 {
 				fmt.Println("Usage: type <command>")
@@ -95,3 +96,16 @@ func checkDir(paths []string, cmd string) (string, bool) {
 	}
 	return "", false
 }
+
+func changeDirectory(path string) {
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		fmt.Printf("cd: %s: Invalid path\n", path)
+		return
+	}
+	err = os.Chdir(absPath)
+	if err != nil {
+		fmt.Printf("cd: %s: No such file or directory\n", path)
+	}
+}
+
