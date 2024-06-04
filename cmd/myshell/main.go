@@ -20,12 +20,18 @@ func main() {
 		if err != nil {
 			fmt.Println("I/O Error")
 		}
-
-		if strings.TrimRight(input,"\n")=="exit 0"{
+		_,param,_:=strings.Cut(input," ")
+		param=strings.TrimRight(param,"\n")
+		
+		switch strings.TrimRight(input,"\n") {
+		case "exit 0":
 			os.Exit(0)
-			break
+			return
+		case "echo "+param:
+			fmt.Println(param)
+		default:
+			fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
 		}
 
-		fmt.Fprint(os.Stdout, input[:len(input)-1]+": command not found\n")
 	}
 }
