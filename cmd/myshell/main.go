@@ -43,6 +43,11 @@ func main() {
 		case "pwd":
 			wd,_:=os.Getwd()
 			fmt.Printf("%s\n",wd)
+		case "cd":
+			err:=os.Chdir(params[0])
+			if err!=nil{
+				fmt.Printf("cd: %s: No such file or directory\n",params[0])
+			}
 		case "type":
 			if len(params) != 1 {
 				fmt.Println("Usage: type <command>")
