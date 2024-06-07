@@ -2,6 +2,8 @@
 
 A simple command-line shell implemented in Go. This shell supports a variety of built-in commands and can execute external programs. It includes basic features like navigating directories, printing the current working directory, and handling commands with arguments.
 
+### Demo : [Youtube Link](https://youtu.be/0Ynff9fRkVk)
+
 ## Features
 
 - **Built-in Commands**:

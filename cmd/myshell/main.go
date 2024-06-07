@@ -9,12 +9,19 @@ import (
 	"strings"
 )
 
+const (
+	colorGreen  = "\033[1;32m"
+	colorRed    = "\033[1;31m"
+	colorYellow = "\033[1;33m"
+	colorReset  = "\033[0m"
+)
+
 func main() {
 	paths := strings.Split(os.Getenv("PATH"), ":")
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Print("$ ")
+		fmt.Print(colorGreen + "$ " + colorReset)
 
 		input, err := reader.ReadString('\n')
 		if err != nil {
@@ -36,33 +43,33 @@ func main() {
 			if len(params) == 1 && params[0] == "0" {
 				os.Exit(0)
 			} else {
-				fmt.Println("Usage: exit 0")
+				fmt.Println(colorRed + "Usage: exit 0" + colorReset)
 			}
 		case "echo":
 			fmt.Println(strings.Join(params, " "))
 		case "pwd":
-			wd,_:=os.Getwd()
-			fmt.Printf("%s\n",wd)
+			wd, _ := os.Getwd()
+			fmt.Printf("%s\n", wd)
 		case "cd":
 			if len(params) != 1 {
-				fmt.Println("Usage: cd <directory>")
+				fmt.Println(colorRed + "Usage: cd <directory>" + colorReset)
 				continue
 			}
 			changeDirectory(params[0])
 		case "type":
 			if len(params) != 1 {
-				fmt.Println("Usage: type <command>")
+				fmt.Println(colorRed + "Usage: type <command>" + colorReset)
 				continue
 			}
 			param := params[0]
 			path, ifFound := checkDir(paths, param)
 			if param == "echo" || param == "exit" || param == "type" {
-				fmt.Printf("%s is a shell builtin\n", param)
+				fmt.Printf("%s%s%s is a shell builtin\n", colorGreen, param, colorReset)
 			} else {
 				if ifFound {
-					fmt.Printf("%s is %s/%s\n", param, path, param)
+					fmt.Printf("%s%s%s is %s/%s\n", colorGreen, param, colorReset, path, param)
 				} else {
-					fmt.Printf("%s: not found\n", param)
+					fmt.Printf("%s%s%s: not found\n", colorRed, param, colorReset)
 				}
 			}
 		default:
@@ -73,10 +80,10 @@ func main() {
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				if err := cmd.Run(); err != nil {
-					fmt.Printf("%s: %v\n", command, err)
+					fmt.Printf("%s%s%s: %v\n", colorRed, command, colorReset, err)
 				}
 			} else {
-				fmt.Printf("%s: command not found\n", command)
+				fmt.Printf("%s%s%s: command not found\n", colorRed, command, colorReset)
 			}
 		}
 	}
@@ -101,7 +108,7 @@ func changeDirectory(path string) {
 	if strings.HasPrefix(path, "~") {
 		home := os.Getenv("HOME")
 		if home == "" {
-			fmt.Println("cd: HOME environment variable is not set")
+			fmt.Println(colorRed + "cd: HOME environment variable is not set" + colorReset)
 			return
 		}
 		if path == "~" {
@@ -113,11 +120,11 @@ func changeDirectory(path string) {
 
 	absPath, err := filepath.Abs(path)
 	if err != nil {
-		fmt.Printf("cd: %s: Invalid path\n", path)
+		fmt.Printf("%scd: %s: Invalid path%s\n", colorRed, path, colorReset)
 		return
 	}
 	err = os.Chdir(absPath)
 	if err != nil {
-		fmt.Printf("cd: %s: No such file or directory\n", path)
+		fmt.Printf("%scd: %s: No such file or directory%s\n", colorRed, path, colorReset)
 	}
 }
